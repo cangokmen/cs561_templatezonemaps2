@@ -29,9 +29,13 @@ void zonemap<T>::build()
         size_t end = std::min(i + num_elements_per_zone, elements.size());
         z.elements.assign(elements.begin() + i, elements.begin() + end);
 
-        z.min = z.elements.front(); // since not sorted, incorrect!!
-        z.max = z.elements.back(); // since not sorted, incorrect!!
-        z.size = z.elements.size(); // correct
+        std::vector<T> sorted_z_elements = z.elements;
+
+        std::sort(sorted_z_elements.begin(), sorted_z_elements.end());
+
+        z.min = sorted_z_elements.front(); 
+        z.max = sorted_z_elements.back(); 
+        z.size = z.elements.size();
 
         zones.push_back(z);
     }
@@ -49,3 +53,49 @@ void zonemap<T>::sort_elements()
 
 
 
+
+
+template <typename T>
+size_t zonemap<T>::query(T key)
+{
+    size_t count = 0;
+
+    for (const auto& z : zones) 
+    {
+        if (key < z.min || key > z.max) 
+        {
+            continue;
+        }
+        else {
+            count += std::count(z.elements.begin(), z.elements.end(), key);
+        }
+    }
+
+    return count;
+}
+
+
+
+template <typename T>
+std::vector<T> zonemap<T>::query(T low, T high)
+{
+    std::vector<T> result;
+
+    for (const auto& z : zones) 
+    {
+        if (high < z.min || low > z.max) 
+        {
+            continue;
+        }
+
+        for (const auto& element : z.elements) 
+        {
+            if (element >= low && element <= high) 
+            {
+                result.push_back(element);
+            }
+        }
+    }
+
+    return result;
+}
