@@ -144,13 +144,17 @@ void generate_point_queries(std::string & output_path, Parameters & params,
 }
 void generate_range_queries(std::string & output_path, Parameters & params,
 		std::vector<int> & input_data) {
-	// Your code starts here ...
-
+	
+	// Finds the range size using floor(s * N)
 	size_t range_size = static_cast<size_t>(params.s * params.N);
 
+	// Initializes a random seed based on current time.
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	// Initializes a RNG using the just created seed
 	std::default_random_engine gen(seed);
+	// Creates a distribution using the possible elements
 	std::uniform_int_distribution<size_t> dist(0, input_data.size() - range_size);
+	// Opens output file to write in
 	std::ofstream output_file(output_path);
 
 	for (size_t i = 0; i < params.R; ++i) {
