@@ -160,7 +160,7 @@ void generate_range_queries(std::string & output_path, Parameters & params,
 	std::ofstream output_file(output_path);
 	// Ensures randomness
 	srand(time(NULL));
-		for (size_t i = 0; i < params.P; i++) {
+		for (size_t i = 0; i < params.R; i++) {
 		if (rand()*1.0/RAND_MAX <= 0.2) {
 			// with 0.2 probability, randomly generate range queries, may contain existing
 			// or non-exising queries
