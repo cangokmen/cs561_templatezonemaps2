@@ -152,21 +152,30 @@ void generate_range_queries(std::string & output_path, Parameters & params,
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	// Initializes a RNG using the just created seed
 	std::default_random_engine gen(seed);
-	// Creates a distribution using the possible elements
-	std::uniform_int_distribution<size_t> dist(0, input_data.size() - range_size);
+	// Creates a uniform distribution of some possible values range query values, 0.2 probability
+	std::uniform_int_distribution<int>  dist1(0, (size_t) (2.0*params.UB));
+	// Creates a uniform distribution of some possible values range query values, 0.8 probability
+	std::uniform_int_distribution<int>  dist2(0, input_data.size() - 1);
 	// Opens output file to write in
 	std::ofstream output_file(output_path);
-
-	for (size_t i = 0; i < params.R; ++i) {
-		size_t start_idx = dist(gen);
-		size_t end_idx = start_idx + range_size - 1;
-
-		if (end_idx >= input_data.size()) {
-			end_idx = input_data.size() - 1;
+	// Ensures randomness
+	srand(time(NULL));
+		for (size_t i = 0; i < params.P; i++) {
+		if (rand()*1.0/RAND_MAX <= 0.2) {
+			// with 0.2 probability, randomly generate range queries, may contain existing
+			// or non-exising queries
+			size_t start_index = dist1(gen);
+			size_t end_index = start_index + range_size - 1;
+			output_file << start_index << " " << end_index << std::endl;
+		} else {
+			// generate existing queries
+			size_t start_index = input_data[dist2(gen)];
+			size_t end_index = start_index + range_size - 1;
+			output_file << start_index << " " << end_index << std::endl;
 		}
-
-		output_file << input_data[start_idx] << " " << input_data[end_idx] << std::endl;
 	}
+	// The above process may produce duplicate range queries. And the number of exsiting range queries
+	// has 0.8*P as the lower bound.
 
 	output_file.close();
 
