@@ -91,7 +91,6 @@ int parse_arguments(int argc, char *argv[], Parameters & params) {
 	return 0;
 }
 
-
 void generate_input_data(std::string & output_path, Parameters & params,
 		std::vector<int> & input_data) {
 	input_data.clear();
@@ -142,6 +141,7 @@ void generate_point_queries(std::string & output_path, Parameters & params,
 	output_file.close();
 
 }
+
 void generate_range_queries(std::string & output_path, Parameters & params,
 		std::vector<int> & input_data) {
 	
